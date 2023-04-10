@@ -1,0 +1,13 @@
+#code
+/node_modules
+/dist
+/login/node_modules
+/login/dist
+/team/node_modules
+/team/dist
+/dll
+/dist
+
+#IDE
+.vscode
+.idea

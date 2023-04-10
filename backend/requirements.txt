@@ -1,0 +1,9 @@
+diffusers
+Flask
+datasets
+loralib
+sentencepiece
+accelerate
+bitsandbytes
+peft
+gradio
