@@ -1,3 +1,5 @@
+IDPChat是开放的中文多模态模型，基于预训练大预言模型LLaMA和开源文生图预训练模型Stable Diffusion构建。
+
 #### Requirement
 1. 操作系统：Ubuntu 20+
 2. cuda 11+, python3.7+
