@@ -9,7 +9,7 @@ import './index.less';
 
 function IdpInput() {
 
-    const { updateIdpGPTMap, conversationId, parentMsgId, setInputDisabled, inputDisabled } = useContext(AppContext);
+    const { updateIdpGPTMap, conversationId, parentMsgId, setInputDisabled, inputDisabled, setParentMsgId } = useContext(AppContext);
     const [inputValue, setInputValue] = useState();
     const refInput = useRef();
 
@@ -34,9 +34,12 @@ function IdpInput() {
 
     const getEnquireApi = async (msgId, text, msg) => {
         const result = await Api.getEnquire({ conversationId, msgId, parentMsgId, text });
+        setInputDisabled(false);
+        setParentMsgId(msgId);
         if (result.code >= 20000000 && result.code <= 30000000) {
-            setInputDisabled(false);
             updateIdpGPTMap(Object.assign(msg, { enquire: result.data }));
+        } else {
+            updateIdpGPTMap(Object.assign(msg, { enquire: '无法解析，请尝试重试提问', type: 'text' }));
         }
         setTimeout(() => {
             refInput.current.focus();
@@ -52,7 +55,7 @@ function IdpInput() {
                 onChange={onChageInputValue}
                 onKeyDown={onInputKeyDown}
                 style={{ height: '40px' }}
-                suffix={inputDisabled ? <LoadingOutlined spin={true}/> : <MessageOutlined />}
+                suffix={inputDisabled ? <LoadingOutlined spin={true} /> : <MessageOutlined />}
                 placeholder={'如果需要画图，请以 "画xxx" 开始'}
                 autoFocus={'autofocus'}
             />
