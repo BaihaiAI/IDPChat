@@ -49,6 +49,7 @@ function IdpInput() {
 
   const getAnswer = async (msgId, text, msg) => {
     let answer = ''
+    let answerType = ''
     let resLen = 0;
     await Api.generateAnswer({
       conversationId, msgId, parentMsgId, text, histories,
@@ -58,7 +59,8 @@ function IdpInput() {
           const result = JSON.parse(responseText);
           if (result.code >= 20000000 && result.code <= 30000000) {
             answer = result.data.content;
-            if (answer) {
+            answerType = result.data.type;
+            if (answerType === 'text' && answer) {
               result.data.content = answer.replaceAll('<br>', '\n');
             }
             updateIdpGPTMap(Object.assign(msg, { enquire: result.data }));
@@ -71,11 +73,13 @@ function IdpInput() {
         }
       }),
     }).then((res) => {
-      histories.push({
-        q: text,
-        a: answer
-      });
-      setHistories(histories);
+      if (answerType === 'text') {
+        histories.push({
+          q: text,
+          a: answer
+        });
+        setHistories(histories);
+      }
     }).catch((err) => {
       console.log(err);
       updateIdpGPTMap(Object.assign(msg, { enquire: '无法回答该问题，请尝试重新提问', type: 'text' }));
