@@ -12,7 +12,7 @@ def load_model(
     model = LlamaForCausalLM.from_pretrained(
         base,
         load_in_8bit=True,
-        device_map="auto",
+        device_map={'': 0},
     )
     
     model = PeftModel.from_pretrained(model, finetuned, device_map={'': 0})
