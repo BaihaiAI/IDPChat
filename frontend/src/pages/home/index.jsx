@@ -143,8 +143,8 @@ function Home() {
             updateIdpGPTMap,
             setInputDisabled
         }}>
-            <div className='idpChatGPT-root'>
-                <div className='idpChatGPT-content' ref={refContent}>
+            <div className='idpChatGPT-root' ref={refContent}>
+                <div className='idpChatGPT-content'>
                     {loadIdpGPTMap}
                 </div>
                 <div className='idpChatGPT-input'>
