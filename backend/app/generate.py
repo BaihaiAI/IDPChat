@@ -1,4 +1,7 @@
 import json
+import sys
+sys.path.append('llama')
+sys.path.append('stable_diffusion')
 from stable_diffusion.generate_image import generate_image
 from llama.generate_text import chat_stream
 
