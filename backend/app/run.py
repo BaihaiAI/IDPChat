@@ -23,7 +23,7 @@ def conversation_msg():
         conversationId = requestBody['conversationId']
         msgId = requestBody['msgId']
         if msg.startswith('画'):
-            response = Response(stream_with_context(image(msg, conversationId, msgId)), mimetype="text/event-stream")
+            response = Response(stream_with_context(image(msg[1:], conversationId, msgId)), mimetype="text/event-stream")
             return response
         else:
             histories = requestBody['histories']
