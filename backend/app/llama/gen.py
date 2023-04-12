@@ -1,8 +1,6 @@
 import gc
 import copy
 import time
-from tenacity import RetryError
-from tenacity import retry, stop_after_attempt, wait_fixed
 
 import torch
 
