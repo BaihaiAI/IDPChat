@@ -8,6 +8,7 @@ module.exports = {
         config.hot = true;
         config.liveReload = true;
         config.port = 8888;
+        config.compress = false,
         config.proxy = {  //进行代理转发
             '/api': {
                 target: `http://122.191.108.39`,

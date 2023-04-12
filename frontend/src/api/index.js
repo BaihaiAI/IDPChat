@@ -1,4 +1,5 @@
 import request from "../utils/request";
+import axios from 'axios';
 import { visualApiPath, projectId, teamId, userId, region } from '../utils/cookies';
 
 import mockJson from '../mock';
@@ -36,10 +37,26 @@ async function exit(conversationId) {
     return await request.post(`/api/conversation/exit`, { conversationId });
 }
 
+/**
+ * 生成答案
+ * @param {*} param0 
+ * @returns 
+ */
+const generateAnswer = ({ conversationId, msgId, parentMsgId, text, histories, onEvent }) => {
+  const path = `/api/conversation/msg`;
+  const body = {
+    conversationId, msgId, parentMsgId, text, histories
+  };
+  return axios.post(path, body, {
+    onDownloadProgress: onEvent
+  });
+}
+
 const Api = {
     getEnquire,
     feedback,
-    exit
+    exit,
+    generateAnswer,
 }
 
 export default Api;

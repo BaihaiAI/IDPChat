@@ -16,7 +16,7 @@ import json
 #     return not dist.is_initialized() or dist.get_rank() == 0
 
 # 模型路径
-base_model_path='/opt/model/models--decapoda-research--llama-7b-hf/snapshots/5f98eefcc80e437ef68d457ad7bf167c2c6a1348'
+base_model_path='/opt/model/models--decapoda-research--llama-13b-hf/snapshots/438770a656712a5072229b62256521845d4de5ce'
 lora_model_path='lora-ft_chinese_02'
 # 缓存会话数据
 conversation_dict = dict()

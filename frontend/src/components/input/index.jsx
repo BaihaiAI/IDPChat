@@ -11,6 +11,7 @@ function IdpInput() {
 
     const { updateIdpGPTMap, conversationId, parentMsgId, setInputDisabled, inputDisabled, setParentMsgId } = useContext(AppContext);
     const [inputValue, setInputValue] = useState();
+    const [histories, setHistories] = useState([]);
     const refInput = useRef();
 
     const onInputKeyDown = (e) => {
@@ -23,7 +24,7 @@ function IdpInput() {
             updateIdpGPTMap(msg);
             setInputValue('');
             setTimeout(() => {
-                getEnquireApi(msgId, inputValue, msg);
+              getAnswer(msgId, inputValue, msg);
             }, 1000);
         }
     }
@@ -45,6 +46,46 @@ function IdpInput() {
             refInput.current.focus();
         });
     }
+
+  const getAnswer = async (msgId, text, msg) => {
+    let answer = ''
+    let resLen = 0;
+    await Api.generateAnswer({
+      conversationId, msgId, parentMsgId, text, histories,
+      onEvent: (({ target }) => {
+        try {
+          const responseText = target.responseText.slice(resLen);
+          const result = JSON.parse(responseText);
+          if (result.code >= 20000000 && result.code <= 30000000) {
+            answer = result.data.content;
+            if (answer) {
+              result.data.content = answer.replaceAll('<br>', '\n');
+            }
+            updateIdpGPTMap(Object.assign(msg, { enquire: result.data }));
+          } else {
+            updateIdpGPTMap(Object.assign(msg, { enquire: '无法回答改问题，请尝试重新提问', type: 'text' }));
+          }
+          resLen = target.responseText.length;
+        } catch (error) {
+          
+        }
+      }),
+    }).then((res) => {
+      histories.push({
+        q: text,
+        a: answer
+      });
+      setHistories(histories);
+    }).catch((err) => {
+      console.log(err);
+      updateIdpGPTMap(Object.assign(msg, { enquire: '无法回答该问题，请尝试重新提问', type: 'text' }));
+    });
+    setInputDisabled(false);
+    setParentMsgId(msgId);
+    setTimeout(() => {
+      refInput.current.focus();
+    });
+  }
 
     const loadInput = useMemo(() => {
         return (

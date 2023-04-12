@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, Response, render_template, request, stream_with_context, make_response
 import json
-from image import generate_image
-from text import conversation_text, delete_conversation
+from generate import image, text
 
 app=Flask(__name__, template_folder='dist',
           static_folder='dist',
@@ -20,29 +19,16 @@ def conversation_msg():
     try:
         requestBody = json.loads(request.get_data(as_text=True))
         print(requestBody)
-        content = ''
-        contentType = 'text'
         msg = requestBody['text']
         conversationId = requestBody['conversationId']
+        msgId = requestBody['msgId']
         if msg.startswith('画'):
-            content = generate_image(msg[1:])
-            contentType = 'image'
+            response = Response(stream_with_context(image(msg, conversationId, msgId)), mimetype="text/event-stream")
+            return response
         else:
-            content = conversation_text(msg, conversationId)
-            contentType = 'text'
-
-        responseData = {
-            "code": 20000000,
-            "data": {
-                "conversationId": conversationId,
-                "msgId": requestBody['msgId'],
-                "type": contentType,
-                "content": content
-            },
-            "message": ""
-        }
-        response = json.dumps(responseData)
-        return response,200,{"Content-Type":"application/json"}
+            histories = requestBody['histories']
+            response = Response(stream_with_context(text(msg, conversationId, msgId, histories)), mimetype="text/event-stream")
+            return response
     except Exception as e:
         print(e)
         responseData = {
@@ -78,30 +64,30 @@ def conversation_feedback():
         response = json.dumps(responseData)
         return response,500,{"Content-Type":"application/json"}
     
-@app.route('/api/conversation/exit', methods=['POST'])
-def conversation_exit():
-    try:
-        requestBody = json.loads(request.get_data(as_text=True))
-        print(requestBody)
-        delete_conversation(requestBody['conversationId'])
-        responseData = {
-            "code": 20000000,
-            "data": {
-                "conversationId": requestBody['conversationId'],
-            },
-            "message": ""
-        }
-        response = json.dumps(responseData)
-        return response,200,{"Content-Type":"application/json"}
-    except Exception as e:
-        print(e)
-        responseData = {
-            "code": 50000000,
-            "data": {},
-            "message": str(e)
-        }
-        response = json.dumps(responseData)
-        return response,500,{"Content-Type":"application/json"}
+# @app.route('/api/conversation/exit', methods=['POST'])
+# def conversation_exit():
+#     try:
+#         requestBody = json.loads(request.get_data(as_text=True))
+#         print(requestBody)
+#         delete_conversation(requestBody['conversationId'])
+#         responseData = {
+#             "code": 20000000,
+#             "data": {
+#                 "conversationId": requestBody['conversationId'],
+#             },
+#             "message": ""
+#         }
+#         response = json.dumps(responseData)
+#         return response,200,{"Content-Type":"application/json"}
+#     except Exception as e:
+#         print(e)
+#         responseData = {
+#             "code": 50000000,
+#             "data": {},
+#             "message": str(e)
+#         }
+#         response = json.dumps(responseData)
+#         return response,500,{"Content-Type":"application/json"}
 
 if __name__=="__main__":
     app.run(port=8000,host="0.0.0.0",debug=False)
