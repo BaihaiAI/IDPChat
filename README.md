@@ -1,4 +1,4 @@
-IDPChat是开放的中文多模态模型，基于预训练大预言模型LLaMA和开源文生图预训练模型Stable Diffusion构建。
+IDPChat是开放的中文多模态模型，基于预训练大预言模型 LLaMA-13B 和开源文生图预训练模型Stable Diffusion构建。
 
 #### Requirement
 1. 操作系统：Ubuntu 20+
@@ -7,7 +7,7 @@ IDPChat是开放的中文多模态模型，基于预训练大预言模型LLaMA�
 
 #### Quickstart
 1. 下载 stable-diffusion 模型到本地，模型下载地址：https://huggingface.co/stabilityai/stable-diffusion-2-1
-2. 下载 llama 模型到本地，模型下载地址：https://huggingface.co/decapoda-research/llama-7b-hf/tree/main
+2. 下载 LLaMA 模型到本地，模型下载地址：https://huggingface.co/decapoda-research/llama-13b-hf/tree/main
 3. 下载中文翻译模型本地，模型下载地址：https://huggingface.co/Helsinki-NLP/opus-mt-zh-en/tree/main
 4. 修改 ./backend/app/stable_diffusion/generate_image.py 文件，设置 diffusion_path 的值为本地 stable-diffusion 模型存储路径，设置 trans_path 的值为本地中文翻译模型的存储路径
 5. 修改 ./backend/app/llama/generate_text.py 文件，设置 load_model 的 base 参数值为本地 llama 模型的存储路径
