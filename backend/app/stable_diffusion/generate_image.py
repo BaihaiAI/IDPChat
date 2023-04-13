@@ -62,5 +62,4 @@ def generate_image(text):
                             guidance_scale=8
                         ).images
     image_base64 = PIL_base64(images[0])
-    print(image_base64)
     return image_base64
